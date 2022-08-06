@@ -6,7 +6,8 @@ var userModel= mongoose.Schema({
         default:"Active"
     },
     role:{
-        type:String
+        type:String,
+        default:"Admin"
     },
     userName:{
         type:String
