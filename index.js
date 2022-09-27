@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json({ limit: '150mb' }));
 
 
-const url="mongodb+srv://austinjb32:"+process.env.MONGO_PASSWORD+"@cluster0.qw08n.mongodb.net/eventManagement?retryWrites=true&w=majority"
+const url="mongodb+srv://austinjb32:"+process.env.MONGO_PASSWORD+"@cluster0.qw08n.mongodb.net/eventManagement?retryWrites=true"
 
 mongoose.connect(process.env.MONGOURL || url, { useNewUrlParser: true, useUnifiedTopology: true }).then(() => {
     // if(data)

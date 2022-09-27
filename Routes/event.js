@@ -5,6 +5,7 @@ const userModel = require("../Models/userModel");
 const bcrypt= require('bcryptjs');
 const jwt=require("jsonwebtoken");
 const tokenModel = require("../Models/tokenModel");
+const { compare } = require("bcrypt");
 let router=express();
 
 router.post("/signup",async(req,res)=>{
@@ -163,7 +164,7 @@ router.post('/login',async(req,res)=>{
         }
         if(await bcrypt.compare(Password,user.password)){
             var token =jwt.sign({user:user},"nest");
-            var tokenData= new tokenModel;
+            var tokenData= new tokenModel();
             tokenData.userId= user._id;
             tokenData.token= token;
             await tokenData.save()
@@ -211,6 +212,63 @@ catch(error){
         msg:error
     })
 }
+})
+
+router.post("/user/me", async(req,res)=>{
+    try{
+        let{token}=req.body
+        var tokenData= await tokenModel.findOne({token:token}).populate("userId")
+        if(tokenData===null||undefined){
+            return res.status(200).json({
+                status:false,
+                msg:"Invalid Token"
+            })
+            return;
+        }
+
+        // const userData= await userModel.findOne({token:token})
+        // if(userData===null||undefined){
+        //     return res.status(200).json({
+        //         status:false,
+        //         msg:"User Data not found"
+        //     })
+        //     return;
+        // }else{
+            return res.status(200).json({
+                status:true,
+                msg:"User Data found",
+                data:tokenData
+            })
+        // }
+
+        // return res.status(200).json({
+        //     status:true,
+        //     msg:"Login Successfully using Token"
+        // })
+    }
+    catch(error){
+        console.log(error)
+        return res.status(200).json({
+            status:false,
+            msg:error
+        })
+    }
+})
+
+router.post('/verify/token',(req,res)=>{
+    try{
+        let {token,key}=req.body;
+        let jwtData=jwt.verify(token,key)
+        return res.status(200).json({
+            status:true,
+            data:jwtData
+        })
+    }catch(error){
+        return res.status(200).json({
+            status:true,
+            msg:error
+        })
+    }
 })
 
 
