@@ -6,6 +6,7 @@ const bcrypt= require('bcryptjs');
 const jwt=require("jsonwebtoken");
 const tokenModel = require("../Models/tokenModel");
 const { compare } = require("bcrypt");
+const adminAuth = require("../Middleware/adminAuth");
 let router=express();
 
 router.post("/signup",async(req,res)=>{
@@ -257,8 +258,8 @@ router.post("/user/me", async(req,res)=>{
 
 router.post('/verify/token',(req,res)=>{
     try{
-        let {token,key}=req.body;
-        let jwtData=jwt.verify(token,key)
+        let {token}=req.body;
+        let jwtData=jwt.verify(token,'nest')
         return res.status(200).json({
             status:true,
             data:jwtData
@@ -268,6 +269,16 @@ router.post('/verify/token',(req,res)=>{
             status:true,
             msg:error
         })
+    }
+})
+
+router.post("/user/profile",async (req,res)=>{
+    try{
+        let{token}=req.body
+        userAuth();
+    }   
+    catch(e){
+
     }
 })
 
