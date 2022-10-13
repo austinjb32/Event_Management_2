@@ -15,9 +15,9 @@ module.exports = async function (req, res, next) {
                 var user = await jwt.verify(token, 'nest');
                 if (user) {
                     req.user = user;
-                    var userdata = await userModel.findOne({ _id: req.user._id }, { password: 0 }); //password: 0 means no password, 1 means need a password
+                    var userdata = await userModel.findOne({ _id: req.user.user._id }, { password: 0 }); //password: 0 means no password, 1 means need a password
                     if (!(userdata===null||undefined)) {
-                        var checkToken = await tokenModel.findOne({ userId: req.user.id, tokenvalue: token, status: 'Active' });
+                        var checkToken = await tokenModel.findOne({ userId: req.user.user._id, tokenvalue: token, status: 'Active' });
                         if (checkToken===null||undefined) {
                             res.status(200).json({
                                 status: false,

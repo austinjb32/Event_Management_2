@@ -7,6 +7,7 @@ const jwt=require("jsonwebtoken");
 const tokenModel = require("../Models/tokenModel");
 const { compare } = require("bcrypt");
 const adminAuth = require("../Middleware/adminAuth");
+const userAuth = require("../Middleware/userAuth");
 let router=express();
 
 router.post("/signup",async(req,res)=>{
@@ -87,7 +88,7 @@ router.post("/signup",async(req,res)=>{
 
 });
 
-router.post('/event/model',async(req,res)=>{
+router.post('/event/model/add',adminAuth,async(req,res)=>{
     try{
 
     var {Name,From,To,Venue,Host}= req.body;
@@ -256,17 +257,78 @@ router.post("/user/me", async(req,res)=>{
     }
 })
 
-router.post('/verify/token',(req,res)=>{
+router.post('/verify/token',adminAuth,(req,res)=>{
     try{
-        let {token}=req.body;
-        let jwtData=jwt.verify(token,'nest')
         return res.status(200).json({
             status:true,
-            data:jwtData
+            msg:"Login Successful"
         })
     }catch(error){
         return res.status(200).json({
             status:true,
+            msg:error
+        })
+    }
+})
+
+
+
+router.post('event/edit',adminAuth,async(res,req)=>{
+    try{
+    var {eid,Ename,from,to,host,venue}=req.body;
+    var event=await userModel.findOne({_id:eid})
+    if(event===undefined||null){
+        res.status(200).json({
+            status:false,
+            msg:"Event ID invalid"
+        })
+        return;
+    }
+    if(Ename!==undefined||null){
+        event.name=Ename;
+        res.status(200).json({
+            status:true,
+            msg:"Event name Updated"
+        })
+    }
+    if(from!==undefined||null){
+        event.from=from;
+        res.status(200).json({
+            status:true,
+            msg:"From Date Updated"
+        })
+    }
+    if(to!==undefined||null){
+        event.to=to;
+        res.status(200).json({
+            status:true,
+            msg:"To Date Updated"
+        })
+    }
+    if(venue!==undefined||null){
+        event.venue=venue;
+        res.status(200).json({
+            status:true,
+            msg:"Venue Updated"
+        })
+    }
+    if(host!==undefined||null){
+        event.host=host;
+        res.status(200).json({
+            status:true,
+            msg:"Host name Updated"
+        })
+    }
+
+    event.save();
+        return res.status(200).json({
+            status:true,
+            msg:'Event Edited Successfully'
+        })
+    }
+    catch(error){
+        return res.status(200).json({
+            status:false,
             msg:error
         })
     }
@@ -282,5 +344,72 @@ router.post("/user/profile",async (req,res)=>{
     }
 })
 
+router.post('/event/list',adminAuth,async(req,res)=>{
+    try{
+        eventList=eventmodel.find()
+        return res.status(200).json({
+            status:true,
+            data:eventList
+        })
+    }
+    catch(error){
+        return res.status(200).json({
+            status:false,
+            msg:error
+        })
+    }
+
+})
+
+router.post('/event/view',adminAuth,async(req,res)=>{
+    try{
+        var {eventId}=req.body
+        var event=eventmodel.findOne({id:eventId})
+        return res.status(200).json({
+            status:true,
+            data:event
+        })
+    }
+    catch(error){
+        return res.status(200).json({
+            status:true,
+            msg:error
+        })
+    }
+})
+
+router.post('/event/delete',adminAuth,async(req,res)=>{
+    try{
+        var {eventId}=req.body
+        var event=eventmodel.updateOne({id:eventId})
+        event.status="deleted"
+        event.save()
+        return res.status(200).json({
+            status:true,
+            msg:"Event Deleted"
+        })
+    }
+    catch(error){
+        return res.status(200).json({
+            status:true,
+            msg:error
+        })
+    }
+})
+
+router.post('/event/book',userAuth,async(req,res)=>{
+    try{
+        return res.status(200).json({
+            status:true,
+            data:""
+        })
+    }
+    catch(error){
+        return res.status(200).json({
+            status:false,
+            msg:error
+        })
+    }
+})
 
 module.exports=router;
