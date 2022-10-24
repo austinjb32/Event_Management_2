@@ -8,6 +8,7 @@ const tokenModel = require("../Models/tokenModel");
 const { compare } = require("bcrypt");
 const adminAuth = require("../Middleware/adminAuth");
 const userAuth = require("../Middleware/userAuth");
+const eventBooking = require("../Models/eventBooking");
 let router=express();
 
 router.post("/signup",async(req,res)=>{
@@ -271,6 +272,37 @@ router.post('/verify/token',adminAuth,(req,res)=>{
     }
 })
 
+router.post('/user/profile',userAuth,async (req,res)=>{
+    var UserId=req.user.user._id
+    var userProfile=await userModel.findOne({_id:UserId})
+    try{
+        return res.status(200).json({
+            status:true,
+            data:userProfile
+        })
+    }catch(error){
+        return res.status(200).json({
+            status:true,
+            msg:error
+        })
+    }
+})
+
+router.post('/event/user/list',userAuth,async(req,res)=>{
+    try{
+        var today= new Date();
+        let allEvents = await eventmodel.find({status:'Active',from:{$gte:today}})
+        return res.status(200).json({
+            status:true,
+            data:allEvents
+        })
+    }catch(error){
+        return res.status(200).json({
+            status:true,
+            msg:error
+        })
+    }
+})
 
 
 router.post('event/edit',adminAuth,async(res,req)=>{
@@ -393,6 +425,23 @@ router.post('/event/delete',adminAuth,async(req,res)=>{
         return res.status(200).json({
             status:true,
             msg:error
+        })
+    }
+})
+
+router.post('/booking/admin/list',adminAuth,async(req,res)=>{
+    try{
+        var {token,eventId}=req.body
+        var bookingList=await eventBooking.find({status:"Active",eventId:eventId}.populate('userId'))
+        return res.status(200).json({
+            status:true,
+            data:bookingList
+        })
+    }catch(error){
+        console.log(error)
+        return res.status(200).json({
+            status:false,
+            error:error
         })
     }
 })

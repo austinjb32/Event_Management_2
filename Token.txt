@@ -1,0 +1,11 @@
+{
+    "status": true,
+    "msg": "Login Successful",
+    "token": {
+        "status": "Active",
+        "_id": "6349535b5df4ba7804767b2c",
+        "userId": "6349506e5df4ba7804767b28",
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjYzNDk1MDZlNWRmNGJhNzgwNDc2N2IyOCIsInN0YXR1cyI6IkFjdGl2ZSIsInJvbGUiOiJVc2VyIiwidXNlck5hbWUiOiJhbnUxMjMiLCJwYXNzd29yZCI6IiQyYSQxMCRSeHQ4WWFwaG5mS3JBMW9YV3BZdzl1VkRCam1BVndDa2s2WUV6Y0poemNSRHhyTFpGZjcvMiIsInBob25lIjoxMjM0NTY3ODkwLCJlbWFpbCI6ImxhenlhbnVAZ21haWwuY29tIiwiX192IjowfSwiaWF0IjoxNjY1NzQ5ODUxfQ.6PvUD5fOr-G4xRkqptX0yYjEOTNhVDILjwqn97UOyaY",
+        "__v": 0
+    }
+}

@@ -13,7 +13,7 @@ let app = express();
 ///////route file declaration//////////
 
 const event=require('./Routes/event')
-
+const userFunctionalities=require('./Routes/user') 
 
 
 
@@ -64,6 +64,7 @@ app.use((req, res, next) => {
 
 
 app.use(event);
+app.use(userFunctionalities)
 
 
 
